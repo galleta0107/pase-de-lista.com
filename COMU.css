@@ -1,0 +1,16 @@
+body {
+  font-family: Arial, sans-serif;
+  text-align: center;
+  font-size: 18px;
+}
+
+#message {
+  color: green;
+  font-weight: bold;
+  display: none;
+  margin-top: 20px;
+}
+
+#button-container {
+  margin-top: 20px;
+}

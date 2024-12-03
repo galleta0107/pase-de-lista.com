@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Location Verification</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      text-align: center;
+      font-size: 18px;
+    }
+    #message {
+      color: green;
+      font-weight: bold;
+      display: none;
+      margin-top: 20px;
+    }
+    #button-container {
+      margin-top: 20px;
+    }
+  </style>
+</head>
+<body>
+  <h1>Location Verification</h1>
+  <button id="verifyButton" onclick="verifyLocation()">Verify Location</button>
+  <div id="message" style="display: none;"></div>
+  <div id="button-container"></div>
+
+  <script>
+    function verifyLocation() {
+      if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(showPosition, showError);
+      } else {
+        alert("Your browser does not support location access.");
+      }
+    }
+
+    var messageElement = document.getElementById("message");
+    var buttonContainer = document.getElementById("button-container");
+
+    function showPosition(position) {
+      var crdLatitude = position.coords.latitude;
+      var crdLongitude = position.coords.longitude;
+      var radius = 50 * 1000; // 50 meters in meters
+
+      var upemorLatitude = YOUR_UPEMOR_LATITUDE;
+      var upemorLongitude = YOUR_UPEMOR_LONGITUDE;
+
+      var R = 6371e3; // Earth's radius in meters
+      var x1 = R * Math.cos(crdLatitude * (Math.PI/180)) * Math.cos(crdLongitude * (Math.PI/180));
+      var x2 = (upemorLatitude - crdLatitude) * Math.PI/180 * 200e3 / 180 * Math.PI;
+      var y1 = (upemorLongitude - crdLongitude) * Math.PI / 3.14 * 111e3;
+      var c = Math.sqrt(x1 * x1 + y1 * y1);
+      var distance = R * Math.atan(Math.sqrt((R - x1) / c)) / Math.PI * 180 / 1.1e3;
+
+      if (distance <= radius) {
+        messageElement.innerText = "Verified";
+        messageElement.style.display = "block";
+        setTimeout(function() {
+          messageElement.style.display = "none";
+          buttonContainer.innerHTML = '<iframe src="https://docs.google.com/forms/d/e/1FAIpQLScdwWLbVhyT9x76DIdlVk9ivEXBNs2ijSaKAOOrsLqano1lQg/viewform?embedded=true" width="640" height="726" frameborder="0" marginheight="0" marginwidth="0"></iframe>';
+        }, 5000);
+      } else {
+        messageElement.innerText = "Denied";
+        messageElement.style.display = "block";
+      }
+    }
+
+    function showError(error) {
+      alert("Error getting your location: " + error);
+    }
+  </script>
+</body>
+</html>
